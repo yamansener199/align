@@ -1,0 +1,122 @@
+﻿﻿@{
+    Layout = null; // This line ensures that the layout is not applied to this specific view
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Raporlama Ekranı</title>
+
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="user-info">
+            <span class="material-icons user-icon">account_circle</span>
+            <span>Super Admin</span>
+            <div id="clock" class="clock" style="margin-left: 10px;"></div>
+            <button class="logout-btn" style="margin-left: 200px;">Cıkış</button>
+        </div>
+    </div>
+    <br>
+    <span class="material-symbols-outlined">
+
+    </span>
+    <div class="navbar">
+        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+        <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Ürün ve Sipariş Yönetimi</a>
+        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
+        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+    </div>
+
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+            var seconds = now.getSeconds().toString().padStart(2, '0');
+            var dateStr = now.toLocaleDateString('tr-TR');
+            var timeStr = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').innerText = dateStr + ' ' + timeStr;
+        }
+
+        setInterval(updateClock, 1000);
+    </script>
+
+    <div class="report-container">
+        <h2>Raporlama Ekranı</h2>
+        <button onclick="downloadPDF()">PDF İndir</button>
+        <div class="filter-container">
+            <label for="doctorFilter">Doktor:</label>
+            <select id="doctorFilter">
+                <option value="">Hepsi</option>
+                <option value="doctor1">Doktor 1</option>
+                <option value="doctor2">Doktor 2</option>
+            </select>
+
+            <label for="productFilter">Ürün:</label>
+            <select id="productFilter">
+                <option value="">Hepsi</option>
+                <option value="product1">Ürün 1</option>
+                <option value="product2">Ürün 2</option>
+            </select>
+
+            <button onclick="filterReport()">Filtrele</button>
+        </div>
+
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>Doktor</th>
+                    <th>Ürün</th>
+                    <th>Miktar</th>
+                    <th>Tarih</th>
+                    <th>Bölge Müdürü</th>
+                    <th> Account No</th>
+                    <th> Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rapor verileri buraya eklenecek -->
+            </tbody>
+        </table>
+
+
+    </div>
+
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+            var seconds = now.getSeconds().toString().padStart(2, '0');
+            var dateStr = now.toLocaleDateString('tr-TR');
+            var timeStr = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').innerText = dateStr + ' ' + timeStr;
+        }
+
+        function filterReport() {
+            // Filtreleme işlemleri burada yapılacak
+            // Seçilen doktor ve ürüne göre rapor verilerini filtrele
+            // Sonucu "reportTable" tablosuna ekle
+        }
+
+        function downloadPDF() {
+            // PDF indirme işlemleri burada yapılacak
+            // "reportTable" tablosundaki verileri kullanarak PDF oluştur
+        }
+
+        setInterval(updateClock, 1000);
+    </script>
+
+</body>
+</html>

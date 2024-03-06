@@ -1,0 +1,250 @@
+﻿﻿@{
+    Layout = null; // This line ensures that the layout is not applied to this specific view
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+
+
+    <link rel="stylesheet" href="~/css/styles.css">
+    <link rel="stylesheet" href="~/css/main.css">
+
+
+    <title>Siparişlerim</title>
+
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="user-info">
+            <span class="material-icons user-icon">account_circle</span>
+            <span>Super Admin</span>
+            <div id="clock" class="clock" style="margin-left: 10px;"></div>
+            <button class="logout-btn" style="margin-left: 90px;">Cıkış</button>
+
+        </div>
+    </div>
+    <br>
+    <div class="navbar">
+        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+        <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Ürün ve Sipariş Yönetimi</a>
+        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
+        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+    </div>
+
+    <div class="orders-container">
+        <button class="create-order-btn" onclick="openPopup()">Yeni Sipariş Oluştur</button>
+
+        <h2>Siparişlerim</h2>
+
+        <div class="order-item">
+            <p>Sipariş #123 - Ürün: XYZ - Tarih: 2022-02-21</p>
+            <div class="order-actions">
+
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">cancel</button>
+                    <button class="material-icons">edit</button>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order-item">
+            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
+            <div class="order-actions">
+                <button class="material-icons">cancel</button>
+                <button class="material-icons">edit</button>
+                <input type="text" placeholder="Kargo Takip No">
+                <div class="order-status">
+                    <label for="orderStatus">Durum:</label>
+                    <select id="orderStatus">
+                        <option value="isleniyor">İşleniyor</option>
+                        <option value="gonderildi">Gönderildi</option>
+                    </select>
+                    <button class="material-icons">done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <br>
+    <div class="popup-container" id="popupContainer">
+        <div class="popup-content">
+            <span class="material-icons" style="float: right; cursor: pointer; color: #34495e;" onclick="closePopup()">close</span>
+            <h2>Yeni Sipariş Oluştur</h2>
+
+            <form>
+                <fieldset>
+                    <legend>Ürün Bilgileri</legend>
+
+                    <div class="form-group">
+                        <label for="product">Ürün:</label>
+                        <select id="product" required>
+                            <option value="" disabled selected>Ürün Seçiniz</option>
+                            <option value="urun1">Ürün 1</option>
+                            <option value="urun2">Ürün 2</option>
+                            <option value="urun3">Ürün 3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Adet:</label>
+                        <input type="number" id="quantity" min="1" value="1" required>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend> Bilgiler</legend>
+
+                    <div class="form-group">
+                        <label for="accountNo">Account No:</label>
+                        <input type="text" id="accountNo" maxlength="10" pattern="\d*" title="Sadece rakam girebilirsiniz" placeholder="Sadece rakam girebilirsiniz" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="doctorName">Doktor İsim Soyisim:</label>
+                        <input type="text" id="doctorName" required>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Notlar</legend>
+
+                    <div class="form-group">
+                        <label for="freeNote">Hesap No (Max 50 karakter):</label>
+                        <textarea id="freeNote" maxlength="50" placeholder="En fazla 50 karakter"></textarea>
+                    </div>
+                </fieldset>
+
+                <div class="form-group">
+                    <button type="button" onclick="completeOrder()">Siparişi Tamamla</button>
+                    <button type="button" onclick="closePopup()">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+</body>
+</html>
+
+
+<script src="main.js"></script>
+<script>
+    function updateClock() {
+        // ... (existing code) ...
+    }
+
+    setInterval(updateClock, 1000);
+
+    function openPopup() {
+        document.getElementById('popupContainer').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('popupContainer').style.display = 'none';
+    }
+</script>
+
+
+
+
+

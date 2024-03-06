@@ -1,0 +1,198 @@
+﻿﻿@{
+    Layout = null; // This line ensures that the layout is not applied to this specific view
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/users.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <title>Kullanıcı Yönetimi</title>
+    <style>
+
+    </style>
+</head>
+<header>
+    <div class="top-bar">
+        <div class="user-info">
+            <span class="material-icons user-icon">account_circle</span>
+            <span>Super Admin</span>
+            <div id="clock" class="clock" style="margin-left: 10px;"></div>
+            <button class="logout-btn" style="margin-left: 90px;">Cıkış</button>
+
+        </div>
+    </div>
+    <br>
+    <div class="navbar">
+        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+        <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Ürün ve Sipariş Yönetimi</a>
+        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
+        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+    </div>
+</header>
+
+<body>
+
+    <div class="container">
+        <h2>Kullanıcı Yönetimi</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ad Soyad</th>
+                    <th>Email</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="userList">
+                <!-- Kullanıcılar burada listelenecek -->
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button onclick="addUser()" class="edit-btn">Kullanıcı Ekle</button>
+            <button onclick="downloadUsers()" class="view-btn">Kullanıcıları İndir (PDF)</button>
+        </div>
+    </div>
+    <!-- Kullanıcı Ekle/İncele Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <center> <h3>Kullanıcı Ekle</h3></center>
+            <label for="name">Ad Soyad:</label>
+            <input type="text" id="name" required>
+            <label for="email">E-posta:</label>
+            <input type="email" id="email" required>
+            <label for="phone">Telefon:</label>
+            <input type="tel" id="phone" required>
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" required>
+            <label for="role">Rol:</label>
+            <select id="role" required>
+                <option value="admin">Super Admin</option>
+                <option value="manager">Bölge Müdürü</option>
+            </select>
+            <div>
+                <button onclick="saveUser()">Kaydet</button>
+                <button class="cancel" onclick="closeModal()">İptal</button>
+            </div>
+        </div>
+    </div>
+    <!-- Kullanıcı Ekle/İncele Modal -->
+
+    <script>
+        let users = [];
+
+        function displayUsers() {
+            const userListElement = document.getElementById('userList');
+            userListElement.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button onclick="editUser(${index})" class="edit-btn">Düzenle</button>
+                            <button onclick="viewUser(${index})" class="view-btn">Görüntüle</button>
+                            <button onclick="deleteUser(${index})" class="delete-btn">Sil</button>
+                        </td>
+                    `;
+                userListElement.appendChild(row);
+            });
+        }
+
+        function addUser() {
+            openModal();
+        }
+
+        function editUser(index) {
+            const selectedUser = users[index];
+            document.getElementById('name').value = selectedUser.name;
+            document.getElementById('email').value = selectedUser.email;
+
+            openModal();
+        }
+
+        function viewUser(index) {
+            const selectedUser = users[index];
+            alert(`ID: ${index + 1}\nAd Soyad: ${selectedUser.name}\nEmail: ${selectedUser.email}`);
+        }
+
+        function deleteUser(index) {
+            if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+                users.splice(index, 1);
+                displayUsers();
+            }
+        }
+
+        function saveUser() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const newUser = { name, email };
+
+            const modalTitle = document.getElementById('userModal').getAttribute('data-title');
+            if (modalTitle === 'Ekle') {
+                users.push(newUser);
+            } else if (modalTitle === 'Düzenle') {
+                const editedUserIndex = parseInt(document.getElementById('userModal').getAttribute('data-edit-index'), 10);
+                users[editedUserIndex] = newUser;
+            }
+
+            displayUsers();
+            closeModal();
+        }
+
+        function openModal() {
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+            document.getElementById('userModal').removeAttribute('data-edit-index');
+            document.getElementById('userModal').setAttribute('data-title', 'Ekle');
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+        }
+
+        function downloadUsers() {
+            alert('Kullanıcıları PDF olarak indirme işlemi burada yapılabilir.');
+        }
+
+        // Örnek kullanıcılar
+        users = [
+            { name: 'John Doe', email: 'john@example.com' },
+            { name: 'Jane Doe', email: 'jane@example.com' },
+            // ... Diğer kullanıcılar ...
+        ];
+
+        // Kullanıcıları listele
+        displayUsers();
+    </script>
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+            var seconds = now.getSeconds().toString().padStart(2, '0');
+            var dateStr = now.toLocaleDateString('tr-TR');
+            var timeStr = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').innerText = dateStr + ' ' + timeStr;
+        }
+
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

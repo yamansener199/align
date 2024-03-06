@@ -1,0 +1,59 @@
+﻿﻿@{
+    Layout = null; // This line ensures that the layout is not applied to this specific view
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- Modern ve güncel CSS framework'ü olarak Bootstrap kullanalım -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Font'u ekleyelim -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2 class="mb-4">Lütfen Kullanıcı Bilginizi Giriniz</h2>
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Kullanıcı Adı" id="username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Şifre" id="password" required>
+            </div>
+            <button type="button" class="btn btn-success login-btn" id="regionManagerLogin">Bölge Müdürü Girişi</button>
+            <button type="button" class="btn btn-primary login-btn" id="superAdminLogin">Super Admin Girişi</button>
+        </form>
+        <div class="forgot-password" onclick="location.href='sifre-unuttum.html'">Şifremi Unuttum?</div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Butonlara tıklanınca bu fonksiyon çalışacak
+        document.getElementById('regionManagerLogin').addEventListener('click', function () {
+            login('Bölge Müdürü');
+        });
+
+        document.getElementById('superAdminLogin').addEventListener('click', function () {
+            login('Super Admin');
+        });
+
+        // Giriş fonksiyonu
+        function login(userType) {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Burada giriş işlemleri yapılabilir, örneğin bir API'ye istek gönderilebilir
+            // Şu an sadece console'a yazdırıyorum
+            console.log(userType + ' Girişi - Kullanıcı Adı: ' + username + ', Şifre: ' + password);
+        }
+    </script>
+
+</body>
+</html>
