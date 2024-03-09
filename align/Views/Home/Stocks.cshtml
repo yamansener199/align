@@ -1,6 +1,10 @@
-﻿﻿@{
+﻿@using align.Models.Product;
+@model List<GetProductsResponseModel>
+﻿@{
     Layout = null; // This line ensures that the layout is not applied to this specific view
 }
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,11 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="~/css/stok-yonetim.css">
-
-
 
     <title>Stok Yönetimi</title>
 
@@ -40,27 +44,51 @@
         <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
         <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
     </div>
-
-    <div class="container">
+    <div class="container" style="padding-top: 10px;">
         <h1>Stok Yönetimi</h1>
+        <row>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Yeni Ürün Ekle
+            </button>
+            @* <button id="downloadPdfBtn">Envanter Raporu İndir</button> *@
+        </row>
+        <row>
+            <table id="stockTable">
+                <thead>
+                    <tr>
+                        <th>Ürün Adı</th>
+                        <th>Atanmamış Stok Sayısı</th>
+                        <th>Bölge Müdürüne Atanmış Stok Sayısı</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stockItem in Model)
+                    {
+                        <tr>
+                            <td>@stockItem.ProductName</td>
+                            <td>@stockItem.UnAssignedProductAmount</td>
+                            <td>@stockItem.AssignedProductAmount</td>
+                            <td>
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#productUpdateModal" onclick="openUpdateModal('@stockItem.ProductName', @stockItem.UnAssignedProductAmount, '@stockItem.ProductId')">Güncelle</button>
+                                <button type="button" class="btn btn-danger">Sil</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <script>
+                function openUpdateModal(productName, productQuantity) {
+                    // Set the existing values in the modal fields
+                    document.getElementById('updateProductName').value = productName;
+                    document.getElementById('updateProductQuantity').value = productQuantity;
+                    document.getElementById('updateProductId').value = productId;
 
-        <button id="newStockBtn">Yeni Ürün Ekle</button>
-        <button id="downloadPdfBtn">Envanter Raporu İndir</button>
-
-        <table id="stockTable">
-            <thead>
-                <tr>
-                    <th>Ürün Adı</th>
-                    <th>Stok Kodu</th>
-                    <th>Stok Adeti</th>
-                    <th>Koli Adeti</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Stoklar buraya dinamik olarak eklenecek -->
-            </tbody>
-        </table>
+                    // Open the update modal
+                    $('#updateModal').modal('show');
+                }
+            </script>
+        </row>
     </div>
 
     <div class="modal" id="stockModal">
@@ -71,14 +99,140 @@
         </div>
     </div>
 
+    <!-- Ürün ekle modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Ürün ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-5">
+                        <form id="addProductForm">
+                            <div class="form-group">
+                                <label for="productName">Ürün Adı:</label>
+                                <input type="text" class="form-control" id="productName" placeholder="Ürün Adı" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productQuantity">Ürün Adeti:</label>
+                                <input type="number" class="form-control" id="productQuantity" placeholder="Ürün Adeti" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="addProductSubmitBtn">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Ürün güncelle modal -->
+    <div class="modal fade" id="productUpdateModal" tabindex="-1" role="dialog" aria-labelledby="productUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="productUpdateModalLabel">Ürün Güncelle</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-5">
+                        <!-- Update Form -->
+                        <form id="updateForm">
+                            <div class="form-group">
+                                <label for="updateProductName">Ürün Adı:</label>
+                                <input type="text" class="form-control" id="updateProductName" placeholder="Ürün Adı" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="updateProductQuantity">Atanmamış Stok Sayısı:</label>
+                                <input type="number" class="form-control" id="updateProductQuantity" placeholder="Atanmamış Stok Sayısı" required>
+                            </div>
+                            <!-- Hidden field to store the ID of the item being updated -->
+                            <input type="hidden" id="updateProductId">
+                            <button type="submit" class="btn btn-primary">Güncelle</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Handle form submission
+            document.getElementById('updateForm').addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Get form data
+                var formData = {
+                    ProductId: parseInt(document.getElementById('updateProductId').value),
+                    ProductName: document.getElementById('updateProductName').value,
+                    UnAssignedProductAmount: parseInt(document.getElementById('updateProductQuantity').value)
+                };
+
+                // Make AJAX request
+                makeUpdateRequest(formData);
+            });
+        });
+
+        function makeUpdateRequest(formData) {
+            // Your API endpoint for updating the product
+            const apiUrl = '/Home/UpdateProduct';
+
+            // Fetch options
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            };
+
+            fetch(apiUrl, fetchOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Check if the update was successful
+                    if (data) {
+                        $('#productUpdateModal').modal('hide');
+                        window.location.href = '/Home/Stocks';
+                    } else {
+                        console.log('Product could not be updated');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function openUpdateModal(productName, unassignedStock, productId) {
+            // Set the existing values in the modal fields
+            document.getElementById('updateProductName').value = productName;
+            document.getElementById('updateProductQuantity').value = unassignedStock;
+            document.getElementById('updateProductId').value = productId;
+
+            // Open the update modal
+            $('#productUpdateModal').modal('show');
+        }
+    </script>
+
+    
 </body>
 </html>
-
-
-
-
-
 
 
 <script>
@@ -96,173 +250,55 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const stockTable = document.getElementById('stockTable');
-        const newStockBtn = document.getElementById('newStockBtn');
-        const stockModal = document.getElementById('stockModal');
-        const closeModalBtn = document.getElementById('closeModal');
 
-        newStockBtn.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
+    document.getElementById('addProductSubmitBtn').addEventListener('click', function (event) {
+        event.preventDefault(); 
 
-        // Örnek stok verileri
-        const stocks = [
-            { productName: 'Ürün 1', stockCode: 'ABC123', stockAmount: 100, boxAmount: 10 },
-            { productName: 'Ürün 2', stockCode: 'XYZ789', stockAmount: 50, boxAmount: 5 },
-            // Daha fazla stok ekleyebilirsiniz
-        ];
+        const name = document.getElementById('productName').value;
+        const quantity = document.getElementById('productQuantity').value;
 
-        // Stokları tabloya ekle
-        displayStocks();
-
-        function displayStocks() {
-            const tbody = stockTable.querySelector('tbody');
-            tbody.innerHTML = '';
-
-            stocks.forEach((stock, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${stock.productName}</td>
-                    <td>${stock.stockCode}</td>
-                    <td>${stock.stockAmount}</td>
-                    <td>${stock.boxAmount}</td>
-                    <td>
-                        <button onclick="viewStock(${index})">Görüntüle</button>
-                        <button onclick="editStock(${index})">Düzenle</button>
-                        <button onclick="deleteStock(${index})">Sil</button>
-                    </td>
-                `;
-
-                tbody.appendChild(row);
-            });
-        }
-
-        function openModal() {
-            // Stok ekleme formunu burada göster
-            const modalContent = stockModal.querySelector('.modal-content');
-            modalContent.innerHTML = `
-                <span class="close" id="closeModal">&times;</span>
-                <form id="stockForm">
-                    <label for="productName">Ürün Adı:</label>
-                    <input type="text" id="productName" required><br>
-
-                    <label for="stockCode">Stok Kodu:</label>
-                    <input type="text" id="stockCode" required><br>
-
-                    <label for="stockAmount">Stok Adeti:</label>
-                    <input type="number" id="stockAmount" required><br>
-
-                    <label for="boxAmount">Koli Adeti:</label>
-                    <input type="number" id="boxAmount" required><br>
-
-                    <button type="button" onclick="saveStock()">Kaydet</button>
-                </form>
-            `;
-
-            stockModal.style.display = 'flex';
-            closeModalBtn.addEventListener('click', closeModal);
-        }
-
-        function closeModal() {
-            stockModal.style.display = 'none';
-        }
-
-        window.onclick = function (event) {
-            if (event.target === stockModal) {
-                closeModal();
-            }
+        const requestBody = {
+            ProductName: name, 
+            Amount: quantity,
         };
 
-        window.viewStock = function (index) {
-            // Görüntüleme işlemi burada yapılabilir
-            alert(`Ürün Adı: ${stocks[index].productName}\nStok Kodu: ${stocks[index].stockCode}\nStok Adeti: ${stocks[index].stockAmount}\nKoli Adeti: ${stocks[index].boxAmount}`);
-        };
-
-        window.editStock = function (index) {
-            // Düzenleme işlemi burada yapılabilir
-            const selectedStock = stocks[index];
-            const stockForm = document.getElementById('stockForm');
-            const productNameInput = document.getElementById('productName');
-            const stockCodeInput = document.getElementById('stockCode');
-            const stockAmountInput = document.getElementById('stockAmount');
-            const boxAmountInput = document.getElementById('boxAmount');
-
-            productNameInput.value = selectedStock.productName;
-            stockCodeInput.value = selectedStock.stockCode;
-            stockAmountInput.value = selectedStock.stockAmount;
-            boxAmountInput.value = selectedStock.boxAmount;
-
-            // Düzenleme formunu göster
-            openModal();
-
-            // Düzenleme işlemini kaydetme
-            document.getElementById('stockForm').addEventListener('submit', function (event) {
-                event.preventDefault();
-                selectedStock.productName = productNameInput.value;
-                selectedStock.stockCode = stockCodeInput.value;
-                selectedStock.stockAmount = stockAmountInput.value;
-                selectedStock.boxAmount = boxAmountInput.value;
-
-                // Tabloyu güncelle
-                displayStocks();
-                closeModal();
-            });
-        };
-
-        window.deleteStock = function (index) {
-            // Silme işlemi burada yapılabilir
-            if (confirm('Bu stoku silmek istediğinizden emin misiniz?')) {
-                stocks.splice(index, 1);
-                // Tabloyu güncelle
-                displayStocks();
-            }
-        };
-
-        window.saveStock = function () {
-            // Yeni stok eklemek için burada işlemler yapılabilir
-            const stockForm = document.getElementById('stockForm');
-            const productNameInput = document.getElementById('productName');
-            const stockCodeInput = document.getElementById('stockCode');
-            const stockAmountInput = document.getElementById('stockAmount');
-            const boxAmountInput = document.getElementById('boxAmount');
-
-            const newStock = {
-                productName: productNameInput.value,
-                stockCode: stockCodeInput.value,
-                stockAmount: stockAmountInput.value,
-                boxAmount: boxAmountInput.value
-            };
-
-            stocks.push(newStock);
-
-            // Tabloyu güncelle
-            displayStocks();
-            closeModal();
-        };
+        makeServerRequest(requestBody);
     });
 
+    function makeServerRequest(requestBody) {
+        const apiUrl = '/Home/AddProduct';
 
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ... Diğer kodlar ...
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
+        };
 
-        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-        downloadPdfBtn.addEventListener('click', downloadStocksPdf);
+        fetch(apiUrl, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data) {
+                    console.log("Product added");
 
-        // ... Diğer kodlar ...
+                    window.location.href = '/Home/Stocks';
 
-        function downloadStocksPdf() {
-            const pdf = new jsPDF();
-
-            pdf.text('Stok Yönetimi', 20, 20);
-            pdf.autoTable({
-                head: [['Ürün Adı', 'Stok Kodu', 'Stok Adeti', 'Koli Adeti']],
-                body: stocks.map(stock => [stock.productName, stock.stockCode, stock.stockAmount, stock.boxAmount]),
+                } else {
+                    console.log('Product could not be added');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
+    }
 
-            pdf.save('Stoklar.pdf');
-        }
-    });
 </script>
+
+
 

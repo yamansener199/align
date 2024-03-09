@@ -1,5 +1,8 @@
 using align.Data;
 using align.Data.Entities;
+using align.Services.Auth;
+using align.Services.Product;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +19,54 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/AccessDenied";
+
+    //options.Cookie.Domain = ".tahsilatcari.com.tr";
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.HttpOnly = true;
+    // Here we set the cookie to be only send over an HTTPS connection.  
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden/";
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+
+    options.AddPolicy("Manager", policy =>
+    {
+        policy.RequireRole("Manager");
+    });
+    
+});
+
+builder.Services.AddLogging(options =>
+{
+    options.AddConsole();
+    options.SetMinimumLevel(LogLevel.Debug);
+});
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 
 // Add services to the container.

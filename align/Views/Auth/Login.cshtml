@@ -21,7 +21,7 @@
         <h2 class="mb-4">Lütfen Kullanıcı Bilginizi Giriniz</h2>
         <form>
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Kullanıcı Adı" id="username" required>
+                <input type="email" class="form-control" placeholder="Email" id="email" required>
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" placeholder="Şifre" id="password" required>
@@ -37,22 +37,61 @@
     <script>
         // Butonlara tıklanınca bu fonksiyon çalışacak
         document.getElementById('regionManagerLogin').addEventListener('click', function () {
-            login('Bölge Müdürü');
+            console.log("Admin login button");
         });
 
         document.getElementById('superAdminLogin').addEventListener('click', function () {
-            login('Super Admin');
+            // Get values from the form
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Create the request body
+            const requestBody = {
+                Email: email,
+                Password: password,
+                IsSuperAdmin: true
+            };
+
+            // Call the function to make the server request with the requestBody
+            makeServerRequest(requestBody);
         });
 
-        // Giriş fonksiyonu
-        function login(userType) {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+        function makeServerRequest(requestBody) {
+            // Your API endpoint
+            const apiUrl = '/Auth/Login';
 
-            // Burada giriş işlemleri yapılabilir, örneğin bir API'ye istek gönderilebilir
-            // Şu an sadece console'a yazdırıyorum
-            console.log(userType + ' Girişi - Kullanıcı Adı: ' + username + ', Şifre: ' + password);
+            // Fetch options
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            };
+
+            fetch(apiUrl, fetchOptions)
+                .then(response => {
+                    // Extract and set cookies in the client's browser
+                    const cookies = response.headers.get('Set-Cookie');
+                    document.cookie = cookies;
+
+                    return response.json();
+                })
+                .then(data => {
+                    // Check if the role is Admin
+                    if (data && data.role === 'Admin') {
+                        // Redirect to Home/Index or another appropriate page
+                        window.location.href = '/Home/Index';
+                    } else {
+                        // Handle other roles or scenarios
+                        console.log('User does not have the Admin role.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
+        
     </script>
 
 </body>
