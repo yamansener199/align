@@ -25,7 +25,7 @@
     <div class="top-bar">
         <div class="user-info">
             <span class="material-icons user-icon">account_circle</span>
-            <span>Super Admin</span>
+            <span id="userInfo">Super Admin</span>
             <div id="clock" class="clock" style="margin-left: 10px;"></div>
             <button class="logout-btn" style="margin-left: 90px;" id="logoutButton">Çıkış</button>
     
@@ -128,6 +128,25 @@
 
 </body>
 </html>
+
+<script>
+    // Fetch user information from the API
+    fetch('/User/GetSessionUserInfo', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            //'Cookie': '.AspNetCore.Identity.Application=CfDJ8Ps9n1LyAgZFs_1wUVrKLmoRvtGP-QarbQ2o8Pi9rpM89lLWvR4MpgNxr51My_qMb5qHx5tSf-ocunmVcF_2JUkvOFNPssjVcBz46dc0NYCItWzsTIZpu8ascsBztP3oOS51LPVLQFBX3XJk01fJysWb8X8xvDLtenouIQnAZ-01EM8OzoTLoeOBw_Bxhk7kt77hrNol7pOqDg-PXZSzBBMl6RZEwVSbRvodFxzymrap9sbNeP95jLjlhv9g2wpP69Gy76KEWymkwt39jtA8jJ64PIW66E4Z2Bh_q6fhPj_vACs1-HIyd7gLSkrn_QYDqgKiW-zCVABbuTMk5RyPQK8oJig0qmIFFp8qUirlZ479GCVzmE1seNanfsaAeTtqq8F3zG1KriaD6kydfkN72rDrAIt1YyG34raowjlcscsHhwSh35rekBryCemj7kQzy8CQLWPS5k3RH4cG2b_4DxNZfdL-BZcPgOFDveF28PISDSr0P8z0v5-XeWPpmzFxGF5tMW9ncm7A9ybjFuVHmKKAUd5aeU_RvKBaINSXPSw4NhcWR1MBAAycLxpoFKoiPbA2WYq90ATpF7O3Jhg2G7u9N1QjtK4FVWUalm5-rdPH3WqH_yK9IyTS_jqya_akWt481zjJfsZIvpcrGnFbEoKHbUowQVbYdg4_RMS_pERpqs5koK-uAFvdpEUjmMqiY7NZjiBxEdEWK-wefUjfCBSxOJ-Fffaqo6JDWq4Bmjbhp2YT233Cume3q5EmWiEkTYqhCZeG1HL9JdEWMVDMfBDrw56hGeTcDVoNQJe2_yxCc0ia3eXLaVO-UNXBZajgYA'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        const fullName = `${data.data.firstName} ${data.data.lastName}`;
+        document.getElementById('userInfo').textContent = fullName;
+    })
+    .catch(error => console.error('Error fetching user information:', error));
+</script>
+
 <script>
     document.getElementById('logoutButton').addEventListener('click', function () {
         // Call the logout API

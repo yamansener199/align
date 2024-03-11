@@ -7,6 +7,7 @@ namespace align.Services.User
     {
         Task<ServiceResponse<UserModel>> AddUser(AddUserRequestModel request);
         Task<ServiceResponse<List<UserModel>>> GetUsers();
+        Task<ServiceResponse<UserModel>> GetUserById(string userId);
         Task<ServiceResponse<UserModel>> UpdateUser(UpdateUserRequestModel updatedUser);
     }
 }

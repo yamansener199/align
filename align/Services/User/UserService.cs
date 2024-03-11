@@ -196,5 +196,38 @@ namespace align.Services.User
 
             await _userManager.UpdateAsync(userFromDb);
         }
+
+        public async Task<ServiceResponse<UserModel>> GetUserById(string userId)
+        {
+            var user = await _context.Users.Where(x => x.Id == userId && !x.IsDeleted).SingleOrDefaultAsync();
+
+            if(user is null)
+            {
+                return new ServiceResponse<UserModel>
+                {
+                    Data = null,
+                    ErrorMessage = "Kullanıcı bulunamadı.",
+                    StatusCode = 404
+                };
+            }
+
+            var result = new ServiceResponse<UserModel>
+            {
+                Data = new UserModel
+                {
+                    Id = userId,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    IsSuperAdmin = user.UserRole == UserRole.Admin,
+                    CreatedAt = user.CreatedAt
+                },
+                ErrorMessage = null,
+                StatusCode = 200
+            };
+
+            return result;
+        }
     }
 }
