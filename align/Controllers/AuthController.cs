@@ -2,6 +2,7 @@
 using align.Data.Entities;
 using align.Models.Auth;
 using align.Services.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,6 +66,14 @@ namespace align.Controllers
             {
                 return StatusCode(403, "Hatali şifre veya email.");
             }
+        }
+
+        [HttpGet("/Auth/Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+            return RedirectToAction("Login", "Auth");
         }
 
         private async Task<bool> ValidateUserCredentialsAndSignIn(string email, string password, bool isSuperAdmin)

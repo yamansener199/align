@@ -57,6 +57,7 @@ namespace align.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Settings()
         {
             var serviceResult = await _userService.GetUsers();

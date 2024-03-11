@@ -27,7 +27,7 @@
             <span class="material-icons user-icon">account_circle</span>
             <span>Super Admin</span>
             <div id="clock" class="clock" style="margin-left: 10px;"></div>
-            <button class="logout-btn" style="margin-left: 90px;" >Cıkış</button>
+            <button class="logout-btn" style="margin-left: 90px;" id="logoutButton">Çıkış</button>
     
         </div>
     </div>
@@ -121,14 +121,34 @@
     </div>
   </div>
 
-  </div>
 
 
 
 
-  
+
 </body>
 </html>
+<script>
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        // Call the logout API
+        fetch('/Auth/Logout', {
+            method: 'GET',
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to the login page after successful logout
+                    window.location.href = '/Auth/Login';
+                } else {
+                    // Handle errors if needed
+                    console.error('Logout failed:', response.status);
+                }
+            })
+            .catch(error => {
+                // Handle network errors
+                console.error('Network error during logout:', error);
+            });
+    });
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
