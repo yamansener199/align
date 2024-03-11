@@ -1,4 +1,7 @@
-﻿﻿@{
+﻿@using align.Models.User;
+@model List<UserModel>
+
+@{
     Layout = null; // This line ensures that the layout is not applied to this specific view
 }
 
@@ -10,7 +13,10 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/users.css">
+    <link rel="stylesheet" href="/css/users.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -20,167 +26,246 @@
 
     </style>
 </head>
-<header>
-    <div class="top-bar">
-        <div class="user-info">
-            <span class="material-icons user-icon">account_circle</span>
-            <span>Super Admin</span>
-            <div id="clock" class="clock" style="margin-left: 10px;"></div>
-            <button class="logout-btn" style="margin-left: 90px;">Cıkış</button>
-
-        </div>
-    </div>
-    <br>
-    <div class="navbar">
-        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
-        <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Ürün ve Sipariş Yönetimi</a>
-        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
-        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
-        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
-        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
-    </div>
-</header>
 
 <body>
+    <header>
+        <div class="top-bar">
+            <div class="user-info">
+                <span class="material-icons user-icon">account_circle</span>
+                <span>Super Admin</span>
+                <div id="clock" class="clock" style="margin-left: 10px;"></div>
+                <button class="logout-btn" style="margin-left: 90px;">Cıkış</button>
 
+            </div>
+        </div>
+        <br>
+        <div class="navbar">
+            <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+            <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Ürün ve Sipariş Yönetimi</a>
+            <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+            <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
+            <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+            <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+        </div>
+    </header>
     <div class="container">
         <h2>Kullanıcı Yönetimi</h2>
 
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Ad Soyad</th>
                     <th>Email</th>
+                    <th>Telefon Numarası</th>
+                    <th>Bölge Müdürü</th>
                     <th>İşlemler</th>
                 </tr>
             </thead>
             <tbody id="userList">
-                <!-- Kullanıcılar burada listelenecek -->
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        @if (!user.IsSuperAdmin)
+                        {
+                            <td> Evet </td>
+                        }
+                        else
+                        {
+                            <td> Hayır </td>
+                        }
+                        <td>
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#userUpdateModal" onclick="openUpdateModal('@user.Id', '@user.FirstName', '@user.LastName', '@user.Email', '@user.PhoneNumber', '@user.IsSuperAdmin')">Güncelle</button>
+                            <button type="button" class="btn btn-danger">Sil</button>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
+        <script>
+            function openUpdateModal(id, firstName, lastName, email, phoneNumber, isSuperAdmin) {
+
+                console.log('isSuperAdmin: ', isSuperAdmin);
+
+                document.getElementById('userFirstNameUpdate').value = firstName;
+                document.getElementById('userLastNameUpdate').value = lastName;
+                document.getElementById('userEmailUpdate').value = email;
+                document.getElementById('userPhoneNumberUpdate').value = phoneNumber;
+                //document.getElementById('isRegionManagerUpdate').checked = isSuperAdmin;
+
+                document.getElementById('userIdUpdate').value = id;
+
+                $('#userUpdateModal').modal('show');
+            }
+        </script>
 
         <div class="actions">
-            <button onclick="addUser()" class="edit-btn">Kullanıcı Ekle</button>
-            <button onclick="downloadUsers()" class="view-btn">Kullanıcıları İndir (PDF)</button>
+            <button class="add-btn" data-toggle="modal" data-target="#addUserModal">Kullanıcı Ekle</button>
+            <button class="view-btn">Kullanıcıları İndir (PDF)</button>
         </div>
     </div>
-    <!-- Kullanıcı Ekle/İncele Modal -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <center> <h3>Kullanıcı Ekle</h3></center>
-            <label for="name">Ad Soyad:</label>
-            <input type="text" id="name" required>
-            <label for="email">E-posta:</label>
-            <input type="email" id="email" required>
-            <label for="phone">Telefon:</label>
-            <input type="tel" id="phone" required>
-            <label for="password">Şifre:</label>
-            <input type="password" id="password" required>
-            <label for="role">Rol:</label>
-            <select id="role" required>
-                <option value="admin">Super Admin</option>
-                <option value="manager">Bölge Müdürü</option>
-            </select>
-            <div>
-                <button onclick="saveUser()">Kaydet</button>
-                <button class="cancel" onclick="closeModal()">İptal</button>
+
+    <!-- Kullanıcı Ekle Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addUserModalLabel">Kullanıcı ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-5">
+                        <form id="addUserForm">
+                            <div class="form-group">
+                                <label for="userFirstName">İsim</label>
+                                <input type="text" class="form-control" id="userFirstName" placeholder="İsim" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userLastName">Soyisim</label>
+                                <input type="text" class="form-control" id="userLastName" placeholder="Soyisim" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userEmail">Email</label>
+                                <input type="email" class="form-control" id="userEmail" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userPhoneNumber">Telefon Numarası</label>
+                                <input type="text" class="form-control" id="userPhoneNumber" placeholder="Telefon Numarası" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="isRegionManager">Bölge Müdürü</label>
+                                <input type="checkbox" class="form-check" id="isRegionManager" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userPassword">Şifre</label>
+                                <input type="password" class="form-control" id="userPassword" placeholder="Şifre" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="addUserButton">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!-- Kullanıcı Ekle/İncele Modal -->
+
+    <!-- Ürün güncelle modal -->
+    <div class="modal fade" id="userUpdateModal" tabindex="-1" role="dialog" aria-labelledby="userUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="userUpdateModalLabel">Ürün Güncelle</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-5">
+                        <!-- Update Form -->
+                        <form id="updateForm" asp-action="UpdateUser" asp-controller="Home" method="post">
+                            <input type="hidden" name="Id" id="userIdUpdate" value="">
+                            <div class="form-group">
+                                <label for="userFirstNameUpdate">İsim</label>
+                                <input type="text" class="form-control" name="FirstName" id="userFirstNameUpdate" placeholder="İsim" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userLastNameUpdate">Soyisim</label>
+                                <input type="text" class="form-control" name="LastName" id="userLastNameUpdate" placeholder="Soyisim" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userEmailUpdate">Email</label>
+                                <input type="email" class="form-control" name="Email" id="userEmailUpdate" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userPhoneNumberUpdate">Telefon Numarası</label>
+                                <input type="text" class="form-control" name="PhoneNumber" id="userPhoneNumberUpdate" placeholder="Telefon Numarası" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userRole">Rol</label>
+                                <select class="form-control" id="userRole" name="UserRole" required>
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Bölge Müdürü">Bölge Müdürü</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="updateUserButton">Güncelle</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <script>
-        let users = [];
+        window.addEventListener('load', function () {
+            document.getElementById('addUserButton').addEventListener('click', function (event) {
+                event.preventDefault();
 
-        function displayUsers() {
-            const userListElement = document.getElementById('userList');
-            userListElement.innerHTML = '';
+                const firstName = document.getElementById('userFirstName').value;
+                const lastName = document.getElementById('userLastName').value;
+                const email = document.getElementById('userEmail').value;
+                const password = document.getElementById('userPassword').value;
+                const phoneNumber = document.getElementById('userPhoneNumber').value;
+                const isRegionManager = document.getElementById('isRegionManager').checked;
 
-            users.forEach((user, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>
-                            <button onclick="editUser(${index})" class="edit-btn">Düzenle</button>
-                            <button onclick="viewUser(${index})" class="view-btn">Görüntüle</button>
-                            <button onclick="deleteUser(${index})" class="delete-btn">Sil</button>
-                        </td>
-                    `;
-                userListElement.appendChild(row);
+                console.log('firstname: ', firstName, 'lastname: ', lastName, 'email: ', email, 'password: ', password, 'phone number: ', phoneNumber, 'isRegionManager: ', isRegionManager);
+
+                const requestBody = {
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Password: password,
+                    PhoneNumber: phoneNumber,
+                    IsRegionManager: isRegionManager,
+                };
+
+                makeServerRequest(requestBody);
             });
+        });
+
+        function makeServerRequest(requestBody) {
+            const apiUrl = '/Home/AddUser';
+
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            };
+
+            fetch(apiUrl, fetchOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        console.log("User added");
+                        window.location.href = '/Home/Settings';
+                    } else {
+                        console.log('User could not be added');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
-
-        function addUser() {
-            openModal();
-        }
-
-        function editUser(index) {
-            const selectedUser = users[index];
-            document.getElementById('name').value = selectedUser.name;
-            document.getElementById('email').value = selectedUser.email;
-
-            openModal();
-        }
-
-        function viewUser(index) {
-            const selectedUser = users[index];
-            alert(`ID: ${index + 1}\nAd Soyad: ${selectedUser.name}\nEmail: ${selectedUser.email}`);
-        }
-
-        function deleteUser(index) {
-            if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
-                users.splice(index, 1);
-                displayUsers();
-            }
-        }
-
-        function saveUser() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-
-            const newUser = { name, email };
-
-            const modalTitle = document.getElementById('userModal').getAttribute('data-title');
-            if (modalTitle === 'Ekle') {
-                users.push(newUser);
-            } else if (modalTitle === 'Düzenle') {
-                const editedUserIndex = parseInt(document.getElementById('userModal').getAttribute('data-edit-index'), 10);
-                users[editedUserIndex] = newUser;
-            }
-
-            displayUsers();
-            closeModal();
-        }
-
-        function openModal() {
-            document.getElementById('userModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('userModal').style.display = 'none';
-            document.getElementById('userModal').removeAttribute('data-edit-index');
-            document.getElementById('userModal').setAttribute('data-title', 'Ekle');
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-        }
-
-        function downloadUsers() {
-            alert('Kullanıcıları PDF olarak indirme işlemi burada yapılabilir.');
-        }
-
-        // Örnek kullanıcılar
-        users = [
-            { name: 'John Doe', email: 'john@example.com' },
-            { name: 'Jane Doe', email: 'jane@example.com' },
-            // ... Diğer kullanıcılar ...
-        ];
-
-        // Kullanıcıları listele
-        displayUsers();
     </script>
+
     <script>
         function updateClock() {
             var now = new Date();
@@ -195,4 +280,5 @@
         setInterval(updateClock, 1000);
     </script>
 </body>
+
 </html>

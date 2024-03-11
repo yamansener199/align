@@ -1,6 +1,8 @@
 ﻿using align.Models;
 using align.Models.Product;
+using align.Models.User;
 using align.Services.Product;
+using align.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -12,10 +14,13 @@ namespace align.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly IProductService _productService;
-        public HomeController(ILogger<HomeController> logger, IProductService productService)
+        private readonly IUserService _userService;
+
+        public HomeController(ILogger<HomeController> logger, IProductService productService, IUserService userService)
         {
             _logger = logger;
             _productService = productService;
+            _userService = userService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -52,9 +57,16 @@ namespace align.Controllers
             return View();
         }
 
-        public IActionResult Settings()
+        public async Task<IActionResult> Settings()
         {
-            return View();
+            var serviceResult = await _userService.GetUsers();
+
+            if (serviceResult.isSuccess) 
+            {
+                return View(serviceResult.Data);
+            }
+
+            throw new Exception("Error while fetching users");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -62,6 +74,8 @@ namespace align.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        #region Product
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Home/AddProduct")]
@@ -103,6 +117,41 @@ namespace align.Controllers
                 return StatusCode(403, result.ErrorMessage);
             }
         }
+
+        #endregion
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Home/AddUser")]
+        public async Task<IActionResult> AddUser([FromBody] AddUserRequestModel request)
+        {
+            var result = await _userService.AddUser(request);
+
+            if (result.isSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(403, result.ErrorMessage);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(UpdateUserRequestModel updatedUser)
+        {
+            var result = await _userService.UpdateUser(updatedUser);
+
+            if (result.isSuccess)
+            {
+                return RedirectToAction("Settings", "Home");
+            }
+            else
+            {
+                return StatusCode(403, result.ErrorMessage);
+            }
+        }
+
 
     }
 }

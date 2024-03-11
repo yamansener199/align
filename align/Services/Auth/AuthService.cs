@@ -1,5 +1,4 @@
 ﻿using align.Data;
-using align.Data.Entities;
 using align.Models.Auth;
 using align.Utils;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +9,10 @@ namespace align.Services.Auth
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<Data.Entities.User> _signInManager;
+        private readonly UserManager<Data.Entities.User> _userManager;
 
-        public AuthService(AppDbContext context, SignInManager<User> signInManager, UserManager<User> userManager)
+        public AuthService(AppDbContext context, SignInManager<Data.Entities.User> signInManager, UserManager<Data.Entities.User> userManager)
         {
             _context = context;
             _signInManager = signInManager;
@@ -27,7 +26,7 @@ namespace align.Services.Auth
             string phoneNumber,
             string password)
         {
-            var entity = new User
+            var entity = new Data.Entities.User
             {
                 Email = email,
                 PhoneNumber = phoneNumber,
