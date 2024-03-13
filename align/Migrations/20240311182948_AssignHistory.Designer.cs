@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using align.Data;
 
@@ -11,9 +12,11 @@ using align.Data;
 namespace align.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240311182948_AssignHistory")]
+    partial class AssignHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,21 +172,6 @@ namespace align.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ProductUser", b =>
-                {
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RegionManagersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ProductsId", "RegionManagersId");
-
-                    b.HasIndex("RegionManagersId");
-
-                    b.ToTable("ProductUser", (string)null);
-                });
-
             modelBuilder.Entity("align.Data.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -263,7 +251,12 @@ namespace align.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RegionManagerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionManagerId");
 
                     b.ToTable("Product", (string)null);
                 });
@@ -275,9 +268,6 @@ namespace align.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AssignedProductAmount")
-                        .HasColumnType("int");
 
                     b.Property<string>("AssignerUserId")
                         .IsRequired()
@@ -451,21 +441,6 @@ namespace align.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductUser", b =>
-                {
-                    b.HasOne("align.Data.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("align.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("RegionManagersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("align.Data.Entities.Order", b =>
                 {
                     b.HasOne("align.Data.Entities.Product", "Product")
@@ -481,6 +456,16 @@ namespace align.Migrations
                         .HasConstraintName("FK_Order_RegionManager");
 
                     b.Navigation("Product");
+
+                    b.Navigation("RegionManager");
+                });
+
+            modelBuilder.Entity("align.Data.Entities.Product", b =>
+                {
+                    b.HasOne("align.Data.Entities.User", "RegionManager")
+                        .WithMany("Products")
+                        .HasForeignKey("RegionManagerId")
+                        .HasConstraintName("FK_Product_RegionManager");
 
                     b.Navigation("RegionManager");
                 });
@@ -526,6 +511,8 @@ namespace align.Migrations
                     b.Navigation("ProductAssignHistoriesAsAssigner");
 
                     b.Navigation("ProductAssignHistoriesAsRegionManager");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿using align.Data;
 using align.Data.Entities;
 using align.Models.Product;
+using align.Services.User;
 using align.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -105,6 +106,64 @@ namespace align.Services.Product
                 },
                 StatusCode = 200,
                 ErrorMessage = null
+            };
+        }
+
+        public async Task<ServiceResponse<AssignProductResponseModel>> AssignProduct(AssignProductRequestModel request, string userId)
+        {
+            var regionManager = await _context.Users.Where(x=>x.Id == request.RegionManagerId).SingleOrDefaultAsync();
+
+            if(regionManager is null)
+            {
+                return new ServiceResponse<AssignProductResponseModel>()
+                {
+                    Data = null,
+                    ErrorMessage = "Bölge Müdürü bulunamadı.",
+                    StatusCode = 404
+                };
+            }
+
+            var product = await _context.Products.Where(x => x.Id == request.ProductId && !x.IsDeleted).SingleOrDefaultAsync();
+
+            if (product is null)
+            {
+                return new ServiceResponse<AssignProductResponseModel>()
+                {
+                    Data = null,
+                    ErrorMessage = "Ürün bulunamadı.",
+                    StatusCode = 404
+                };
+            }
+
+            // product.Amount >= request.ProductAmount is guaranteed 
+            product.Amount = product.Amount - request.ProductAmount;
+            product.ChangedBy = userId;
+            product.ChangedAt = DateTime.UtcNow;
+
+            regionManager.Products.Add(product);
+
+            var productAssignHistoryEntity = new ProductAssignHistory
+            {
+                AssignerUserId = userId,
+                ProductId = request.ProductId,
+                RegionManagerId = request.RegionManagerId,
+                AssignedProductAmount = request.ProductAmount
+            };
+
+            _context.Add(productAssignHistoryEntity);
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<AssignProductResponseModel>
+            {
+                Data = new AssignProductResponseModel() 
+                {
+                    ProductId = request.ProductId,
+                    RegionManagerId = request.RegionManagerId,
+                    ProductName = product.Name,
+                    AssignedProductAmount = request.ProductAmount
+                },
+                ErrorMessage = null,
+                StatusCode = 200
             };
         }
     }

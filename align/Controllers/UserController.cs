@@ -16,7 +16,7 @@ namespace align.Controllers
 
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet("/User/GetSessionUserInfo")]
-        public async Task<ActionResult<UserModel>> GetSessionUserInfo()
+        public async Task<IActionResult> GetSessionUserInfo()
         {
             string userId = HttpContext.User.Identities.FirstOrDefault().Claims.FirstOrDefault().Value;
 
@@ -26,6 +26,20 @@ namespace align.Controllers
             }
 
             var result = await _userService.GetUserById(userId);
+
+            if (result.isSuccess)
+            {
+                return Ok(result);
+            }
+
+            return StatusCode(StatusCodes.Status403Forbidden, "Oopss!");
+        }
+
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpGet("/User/GetRegionManagers")]
+        public async Task<IActionResult> GetRegionManagers()
+        {
+            var result = await _userService.GetRegionManagers();
 
             if (result.isSuccess)
             {

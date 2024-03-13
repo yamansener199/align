@@ -15,6 +15,7 @@ namespace align.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ProductAssignHistory> ProductAssignHistories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,10 +27,7 @@ namespace align.Data
                 entity.ToTable(nameof(User));
 
                 entity.HasMany(a => a.Products)
-                .WithOne(a => a.RegionManager)
-                .HasForeignKey(a => a.RegionManagerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_User_Products");
+                .WithMany(a => a.RegionManagers);
 
                 entity.HasMany(a => a.Orders)
                 .WithOne(a => a.RegionManager)
@@ -42,11 +40,8 @@ namespace align.Data
             {
                 entity.ToTable(nameof(Product));
 
-                entity.HasOne(a => a.RegionManager)
-                .WithMany(a => a.Products)
-                .HasForeignKey(a => a.RegionManagerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Product_RegionManager");
+                entity.HasMany(a => a.RegionManagers)
+                .WithMany(a => a.Products);
 
                 entity.HasMany(a => a.Orders)
                 .WithOne(a => a.Product)
@@ -70,6 +65,30 @@ namespace align.Data
                 .HasForeignKey(a => a.RegionManagerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Order_RegionManager");
+            });
+
+            modelBuilder.Entity<ProductAssignHistory>(entity =>
+            {
+                entity.ToTable(nameof(ProductAssignHistory));
+
+                entity.HasOne(pah => pah.RegionManager)
+                .WithMany(user => user.ProductAssignHistoriesAsRegionManager)
+                .HasForeignKey(pah => pah.RegionManagerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductAssignHistory_RegionManager");
+
+                entity.HasOne(a => a.AssignerUser)
+                .WithMany(a => a.ProductAssignHistoriesAsAssigner)
+                .HasForeignKey(a => a.AssignerUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductAssignHistory_AssignerUser");
+
+                entity.HasOne(pah => pah.Product)
+                .WithMany(product => product.ProductAssignHistories)
+                .HasForeignKey(pah => pah.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductAssignHistory_Product");
+
             });
 
             SeedRoles(modelBuilder);

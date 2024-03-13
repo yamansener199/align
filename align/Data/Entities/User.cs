@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace align.Data.Entities
 {
@@ -12,6 +13,10 @@ namespace align.Data.Entities
         public bool IsDeleted { get; set; }
         public List<Order> Orders { get; set; } = new();
         public List<Product> Products { get; set; } = new();
+        public List<ProductAssignHistory> ProductAssignHistoriesAsRegionManager { get; set; } = new();
+        
+        [NotMapped]
+        public List<ProductAssignHistory> ProductAssignHistoriesAsAssigner { get; set; } = new();
     }
 
     public enum UserRole

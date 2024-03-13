@@ -9,5 +9,6 @@ namespace align.Services.User
         Task<ServiceResponse<List<UserModel>>> GetUsers();
         Task<ServiceResponse<UserModel>> GetUserById(string userId);
         Task<ServiceResponse<UserModel>> UpdateUser(UpdateUserRequestModel updatedUser);
+        Task<ServiceResponse<List<UserModel>>> GetRegionManagers();
     }
 }

@@ -44,7 +44,7 @@
         <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
         <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
     </div>
-    <div class="container" style="padding-top: 10px;">
+    <div class="container" style="padding-top: 10px; width: 80%; max-width: 1440px;">
         <h1>Stok Yönetimi</h1>
         <row>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -70,6 +70,7 @@
                             <td>@stockItem.UnAssignedProductAmount</td>
                             <td>@stockItem.AssignedProductAmount</td>
                             <td>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#assignProductModal" onclick="">Bölge Müdürüne Ata</button>
                                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#productUpdateModal" onclick="openUpdateModal('@stockItem.ProductName', @stockItem.UnAssignedProductAmount, '@stockItem.ProductId')">Güncelle</button>
                                 <button type="button" class="btn btn-danger">Sil</button>
                             </td>
@@ -96,6 +97,38 @@
             <span class="close" id="closeModal">&times;</span>
             <!-- Stok formu buraya gelecek -->
 
+        </div>
+    </div>
+
+    <!-- Bölge müdürüne ürün ata modal -->
+    <div class="modal fade" id="assignProductModal" tabindex="-1" role="dialog" aria-labelledby="assignProductModallLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="assignProductModallLabel">Bölge Müdürüne Ürün Ata</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mt-5">
+                        <form method="post" asp-action="Assign" asp-controller="Product">
+                            <div class="form-group">
+                                <label for="regionManagerSelect">Bölge Müdürü Seç</label>
+                                <select class="form-control" id="regionManagerSelect">
+                                    <option value="1">Bölge Müdürü 1</option>
+                                    <option value="2">Bölge Müdürü 2</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignedProductCount">Atanacak Ürün Sayısı</label>
+                                <input type="number" class="form-control" id="assignedProductCount" placeholder="Atanacak Ürün Sayısını Giriniz">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -167,12 +200,36 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
-        // Fetch user information from the API
+        // Function to fetch data from the API
+        function fetchData() {
+            fetch('https://localhost:7097/User/GetRegionManagers')
+                .then(response => response.json())
+                .then(data => {
+                    // Get the select element
+                    const selectElement = document.getElementById('regionManagerSelect');
+
+                    // Clear any existing options
+                    selectElement.innerHTML = '';
+
+                    // Loop through the data and add options
+                    data.data.forEach(manager => {
+                        const option = document.createElement('option');
+                        option.value = manager.id; // Assuming manager id is unique and suitable for value
+                        option.textContent = `${manager.firstName} ${manager.lastName}`;
+                        selectElement.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call the fetchData function when the page loads
+        window.onload = fetchData;
+    </script>
+    <script>
         fetch('/User/GetSessionUserInfo', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                //'Cookie': '.AspNetCore.Identity.Application=CfDJ8Ps9n1LyAgZFs_1wUVrKLmoRvtGP-QarbQ2o8Pi9rpM89lLWvR4MpgNxr51My_qMb5qHx5tSf-ocunmVcF_2JUkvOFNPssjVcBz46dc0NYCItWzsTIZpu8ascsBztP3oOS51LPVLQFBX3XJk01fJysWb8X8xvDLtenouIQnAZ-01EM8OzoTLoeOBw_Bxhk7kt77hrNol7pOqDg-PXZSzBBMl6RZEwVSbRvodFxzymrap9sbNeP95jLjlhv9g2wpP69Gy76KEWymkwt39jtA8jJ64PIW66E4Z2Bh_q6fhPj_vACs1-HIyd7gLSkrn_QYDqgKiW-zCVABbuTMk5RyPQK8oJig0qmIFFp8qUirlZ479GCVzmE1seNanfsaAeTtqq8F3zG1KriaD6kydfkN72rDrAIt1YyG34raowjlcscsHhwSh35rekBryCemj7kQzy8CQLWPS5k3RH4cG2b_4DxNZfdL-BZcPgOFDveF28PISDSr0P8z0v5-XeWPpmzFxGF5tMW9ncm7A9ybjFuVHmKKAUd5aeU_RvKBaINSXPSw4NhcWR1MBAAycLxpoFKoiPbA2WYq90ATpF7O3Jhg2G7u9N1QjtK4FVWUalm5-rdPH3WqH_yK9IyTS_jqya_akWt481zjJfsZIvpcrGnFbEoKHbUowQVbYdg4_RMS_pERpqs5koK-uAFvdpEUjmMqiY7NZjiBxEdEWK-wefUjfCBSxOJ-Fffaqo6JDWq4Bmjbhp2YT233Cume3q5EmWiEkTYqhCZeG1HL9JdEWMVDMfBDrw56hGeTcDVoNQJe2_yxCc0ia3eXLaVO-UNXBZajgYA'
             },
         })
             .then(response => response.json())
@@ -186,7 +243,6 @@
 
     <script>
         document.getElementById('logoutButton').addEventListener('click', function () {
-            // Call the logout API
             fetch('/Auth/Logout', {
                 method: 'GET',
             })
@@ -207,27 +263,22 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Handle form submission
             document.getElementById('updateForm').addEventListener('submit', function (e) {
                 e.preventDefault(); // Prevent the default form submission
 
-                // Get form data
                 var formData = {
                     ProductId: parseInt(document.getElementById('updateProductId').value),
                     ProductName: document.getElementById('updateProductName').value,
                     UnAssignedProductAmount: parseInt(document.getElementById('updateProductQuantity').value)
                 };
 
-                // Make AJAX request
                 makeUpdateRequest(formData);
             });
         });
 
         function makeUpdateRequest(formData) {
-            // Your API endpoint for updating the product
             const apiUrl = '/Home/UpdateProduct';
 
-            // Fetch options
             const fetchOptions = {
                 method: 'POST',
                 headers: {
@@ -244,7 +295,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Check if the update was successful
                     if (data) {
                         $('#productUpdateModal').modal('hide');
                         window.location.href = '/Home/Stocks';
@@ -258,12 +308,10 @@
         }
 
         function openUpdateModal(productName, unassignedStock, productId) {
-            // Set the existing values in the modal fields
             document.getElementById('updateProductName').value = productName;
             document.getElementById('updateProductQuantity').value = unassignedStock;
             document.getElementById('updateProductId').value = productId;
 
-            // Open the update modal
             $('#productUpdateModal').modal('show');
         }
     </script>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using align.Data;
 
@@ -11,9 +12,11 @@ using align.Data;
 namespace align.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240312154004_product_user_many_to_many2")]
+    partial class product_user_many_to_many2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,7 +184,7 @@ namespace align.Migrations
 
                     b.HasIndex("RegionManagersId");
 
-                    b.ToTable("ProductUser", (string)null);
+                    b.ToTable("ProductUser");
                 });
 
             modelBuilder.Entity("align.Data.Entities.Order", b =>

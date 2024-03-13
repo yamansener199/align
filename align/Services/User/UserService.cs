@@ -1,5 +1,6 @@
 ﻿using align.Data;
 using align.Data.Entities;
+using align.Mappers;
 using align.Models.Auth;
 using align.Models.User;
 using align.Utils;
@@ -228,6 +229,18 @@ namespace align.Services.User
             };
 
             return result;
+        }
+
+        public async Task<ServiceResponse<List<UserModel>>> GetRegionManagers()
+        {
+            var users = await _context.Users.Where(x => x.UserRole == UserRole.RegionManager && !x.IsDeleted).ToListAsync();
+
+            return new ServiceResponse<List<UserModel>>
+            {
+                Data = users.ToModelList(),
+                ErrorMessage = null,
+                StatusCode = 200
+            };
         }
     }
 }
