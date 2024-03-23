@@ -31,197 +31,69 @@
         </div>
     </div>
     <br>
-    <div class="navbar">
-        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+    <div class="navbar" style="padding-top: 80px;">
+
+        @if (ViewBag.UserRole == "Admin")
+        {
+            <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+        }
+
         <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Sipariş Yönetimi</a>
-        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
-        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
-        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
-        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+
+        @if (ViewBag.UserRole == "Admin")
+        {
+            <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+        }
+
+        @if (ViewBag.UserRole == "Manager")
+        {
+            <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Envanterim</a>
+        }
+
+        @if (ViewBag.UserRole == "Admin")
+        {
+            <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+            <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+        }
+
     </div>
 
-    <div class="orders-container">
-        <button class="create-order-btn" onclick="openPopup()">Yeni Sipariş Oluştur</button>
-
-        <h2>Siparişlerim</h2>
-
-        <div class="order-item">
-            <p>Sipariş #123 - Ürün: XYZ - Tarih: 2022-02-21</p>
-            <div class="order-actions">
-
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">cancel</button>
-                    <button class="material-icons">edit</button>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
-        <div class="order-item">
-            <p>Sipariş #124 - Ürün: ABC doktor ahmet- 245677- Tarih: 2022-02-22</p>
-            <div class="order-actions">
-                <button class="material-icons">cancel</button>
-                <button class="material-icons">edit</button>
-                <input type="text" placeholder="Kargo Takip No">
-                <div class="order-status">
-                    <label for="orderStatus">Durum:</label>
-                    <select id="orderStatus">
-                        <option value="isleniyor">İşleniyor</option>
-                        <option value="gonderildi">Gönderildi</option>
-                    </select>
-                    <button class="material-icons">done</button>
-                </div>
-            </div>
-        </div>
+    <div class="container mt-3" style="padding: 30px;">
+        <h2>Siparişler</h2>
+        @if (ViewBag.UserRole == "Manager")
+        {
+            <button class="btn btn-primary mb-3" id="addOrderButton">Yeni Sipariş Ekle</button>
+        }
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Bölge Müdürü İsmi</th>
+                    <th>Bölge Müdürü Soyismi</th>
+                    <th>Bölge Müdürü Account No</th>
+                    <th>Ürün Adı</th>
+                    <th>Ürün Miktarı</th>
+                    <th>İşlem Tarihi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Example row (dynamically populate rows here) -->
+                <tr>
+                    <td>John</td>
+                    <td>Doe</td>
+                    <td>123456</td>
+                    <td>Product 1</td>
+                    <td>50</td>
+                    <td>2024-03-23</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm">Güncelle</button>
+                        <button class="btn btn-danger btn-sm">Sil</button>
+                    </td>
+                </tr>
+                <!-- Repeat for each order -->
+            </tbody>
+        </table>
     </div>
-
-
-
-    <br>
-    <div class="popup-container" id="popupContainer">
-        <div class="popup-content">
-            <span class="material-icons" style="float: right; cursor: pointer; color: #34495e;" onclick="closePopup()">close</span>
-            <h2>Yeni Sipariş Oluştur</h2>
-
-            <form>
-                <fieldset>
-                    <legend>Ürün Bilgileri</legend>
-
-                    <div class="form-group">
-                        <label for="product">Ürün:</label>
-                        <select id="product" required>
-                            <option value="" disabled selected>Ürün Seçiniz</option>
-                            <option value="urun1">Ürün 1</option>
-                            <option value="urun2">Ürün 2</option>
-                            <option value="urun3">Ürün 3</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="quantity">Adet:</label>
-                        <input type="number" id="quantity" min="1" value="1" required>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend> Bilgiler</legend>
-
-                    <div class="form-group">
-                        <label for="accountNo">Account No:</label>
-                        <input type="text" id="accountNo" maxlength="10" pattern="\d*" title="Sadece rakam girebilirsiniz" placeholder="Sadece rakam girebilirsiniz" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="doctorName">Doktor İsim Soyisim:</label>
-                        <input type="text" id="doctorName" required>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Notlar</legend>
-
-                    <div class="form-group">
-                        <label for="freeNote">Hesap No (Max 50 karakter):</label>
-                        <textarea id="freeNote" maxlength="50" placeholder="En fazla 50 karakter"></textarea>
-                    </div>
-                </fieldset>
-
-                <div class="form-group">
-                    <button type="button" onclick="completeOrder()">Siparişi Tamamla</button>
-                    <button type="button" onclick="closePopup()">İptal</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-
 
 </body>
 </html>

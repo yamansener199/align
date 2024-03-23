@@ -1,8 +1,10 @@
 using align.Data;
 using align.Data.Entities;
+using align.Filters;
 using align.Services.Auth;
 using align.Services.Product;
 using align.Services.User;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +67,7 @@ builder.Services.AddLogging(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<UserRoleActionFilter>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -73,7 +76,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(typeof(UserRoleActionFilter));
+});
 
 var app = builder.Build();
 

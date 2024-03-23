@@ -52,7 +52,8 @@ namespace align.Controllers
             return View();
         }
 
-        public IActionResult Warehouse()
+        [Authorize(Roles = "Manager")]
+        public IActionResult Warehouse() // Envanterim
         {
             return View();
         }

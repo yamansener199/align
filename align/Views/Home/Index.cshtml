@@ -1,4 +1,6 @@
-﻿﻿@{
+﻿@using align.Data.Entities;
+@using align.Models.Shared;
+﻿@{
     Layout = null; // This line ensures that the layout is not applied to this specific view
 }
 
@@ -20,30 +22,45 @@
       color:blue
     }
 </style>
-
-<header>
-    <div class="top-bar">
-        <div class="user-info">
-            <span class="material-icons user-icon">account_circle</span>
-            <span id="userInfo">Super Admin</span>
-            <div id="clock" class="clock" style="margin-left: 10px;"></div>
-            <button class="logout-btn" style="margin-left: 90px;" id="logoutButton">Çıkış</button>
-    
-        </div>
-    </div>
-    <br>
-    <div class="navbar">
-        <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
-        <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Sipariş Yönetimi</a>
-        <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
-        <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
-        <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
-        <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
-    </div>
-</header>
 <body>
-  
-  <div class="container dashboard">
+    <header>
+        <div class="top-bar">
+            <div class="user-info">
+                <span class="material-icons user-icon">account_circle</span>
+                <span id="userInfo">Super Admin</span>
+                <div id="clock" class="clock" style="margin-left: 10px;"></div>
+                <button class="logout-btn" style="margin-left: 90px;" id="logoutButton">Çıkış</button>
+
+            </div>
+        </div>
+        <div class="navbar" style="padding-top: 80px;">
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+            }
+            
+            <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Sipariş Yönetimi</a>
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+            }
+
+            @if (ViewBag.UserRole == "Manager")
+            {
+                <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Envanterim</a>
+            }
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+                <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+            }
+
+        </div>
+    </header>
+    <div class="container dashboard">
     <div class="row">
       <div class="col-md-4">
         <div class="card">
@@ -128,7 +145,8 @@
 
 </body>
 </html>
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Fetch user information from the API
     fetch('/User/GetSessionUserInfo', {
@@ -168,9 +186,7 @@
             });
     });
 </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+<script>
     function updateClock() {
         var now = new Date();
         var hours = now.getHours().toString().padStart(2, '0');

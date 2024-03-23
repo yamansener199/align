@@ -39,13 +39,31 @@
             </div>
         </div>
         <br>
-        <div class="navbar">
-            <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+        <div class="navbar" style="padding-top: 80px;">
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Index"><span class="material-icons">home</span>Dashboard</a>
+            }
+
             <a href="/Home/Orders"><span class="material-icons">shopping_cart</span>Sipariş Yönetimi</a>
-            <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
-            <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Depo Yönetimi</a>
-            <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
-            <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Stocks"><span class="material-icons">storage</span>Stok Yönetimi</a>
+            }
+
+            @if (ViewBag.UserRole == "Manager")
+            {
+                <a href="/Home/Warehouse"><span class="material-icons">warehouse</span>Envanterim</a>
+            }
+
+            @if (ViewBag.UserRole == "Admin")
+            {
+                <a href="/Home/Report"><span class="material-icons">bar_chart</span>Sipariş Raporları</a>
+                <a href="/Home/Settings"><span class="material-icons">manage_accounts</span>Kullanıcı Yönetimi</a>
+            }
+
         </div>
     </header>
     <div class="container">
