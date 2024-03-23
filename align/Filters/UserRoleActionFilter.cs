@@ -26,10 +26,10 @@ namespace align.Filters
                 }
                 else
                 {
-                    if (!context.HttpContext.Request.Path.Value.StartsWith("/Auth/Login"))
-                    {
-                        context.Result = new RedirectResult("~/Auth/Login");
-                    }
+                    //if (!context.HttpContext.Request.Path.Value.StartsWith("/Auth/Login"))
+                    //{
+                    //    context.Result = new RedirectResult("~/Auth/Login");
+                    //}
 
                     return;
                 }
