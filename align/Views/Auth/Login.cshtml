@@ -37,7 +37,19 @@
     <script>
         // Butonlara tıklanınca bu fonksiyon çalışacak
         document.getElementById('regionManagerLogin').addEventListener('click', function () {
-            console.log("Admin login button");
+            // Get values from the form
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Create the request body
+            const requestBody = {
+                Email: email,
+                Password: password,
+                IsSuperAdmin: false
+            };
+
+            // Call the function to make the server request with the requestBody
+            makeServerRequest(requestBody);
         });
 
         document.getElementById('superAdminLogin').addEventListener('click', function () {
@@ -57,10 +69,8 @@
         });
 
         function makeServerRequest(requestBody) {
-            // Your API endpoint
             const apiUrl = '/Auth/Login';
 
-            // Fetch options
             const fetchOptions = {
                 method: 'POST',
                 headers: {
@@ -71,20 +81,16 @@
 
             fetch(apiUrl, fetchOptions)
                 .then(response => {
-                    // Extract and set cookies in the client's browser
                     const cookies = response.headers.get('Set-Cookie');
                     document.cookie = cookies;
 
                     return response.json();
                 })
                 .then(data => {
-                    // Check if the role is Admin
                     if (data && data.role === 'Admin') {
-                        // Redirect to Home/Index or another appropriate page
                         window.location.href = '/Home/Index';
                     } else {
-                        // Handle other roles or scenarios
-                        console.log('User does not have the Admin role.');
+                        window.location.href = '/Home/Warehouse';
                     }
                 })
                 .catch(error => {

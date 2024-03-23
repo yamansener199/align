@@ -8,5 +8,6 @@
         public User RegionManager { get; set; }
         public string AccountNumber { get; set; }
         public string DoctorFullName { get; set; }
+        public int ProductAmount { get; set; }
     }
 }

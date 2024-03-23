@@ -45,14 +45,17 @@ namespace align.Services.Product
         {
             List<GetProductsResponseModel> getProductsResponseModels = new List<GetProductsResponseModel>();
 
-            var entities = await _context.Products.Where(x => !x.IsDeleted).ToListAsync();
+            var entities = await _context.Products.Where(x => !x.IsDeleted)
+                .Include(x => x.RegionManagers)
+                .Include(x => x.ProductAssignHistories)
+                .ToListAsync();
 
             foreach (var entity in entities)
             {
                 getProductsResponseModels.Add(new GetProductsResponseModel
                 {
                     ProductId = entity.Id,
-                    AssignedProductAmount = SetAssignedProductAmount(entity),
+                    AssignedProductAmount = await SetAssignedProductAmount(entity),
                     ProductName = entity.Name,
                     UnAssignedProductAmount = SetUnAssignedProductAmount(entity)
                 });
@@ -68,14 +71,16 @@ namespace align.Services.Product
 
         private int SetUnAssignedProductAmount(Data.Entities.Product entity)
         {
-            // Will be implemented later
             return entity.Amount;
         }
 
-        private int SetAssignedProductAmount(Data.Entities.Product entity)
+        private async Task<int> SetAssignedProductAmount(Data.Entities.Product entity)
         {
-            // Will be implemented later
-            return 0;
+            var totalAssignedCount = await _context.ProductAssignHistories.Where(x => x.ProductId == entity.Id && !x.IsDeleted).SumAsync(x => x.AssignedProductAmount);
+
+            var orderedCount = await _context.Orders.Where(x => x.ProductId == entity.Id && !x.IsDeleted).SumAsync(x => x.ProductAmount);
+
+            return totalAssignedCount - orderedCount;
         }
 
         public async Task<ServiceResponse<UpdateProductResponseModel>> UpdateProduct(int productId, string productName, int unAssignedProductAmount)
@@ -111,7 +116,7 @@ namespace align.Services.Product
 
         public async Task<ServiceResponse<AssignProductResponseModel>> AssignProduct(AssignProductRequestModel request, string userId)
         {
-            var regionManager = await _context.Users.Where(x=>x.Id == request.RegionManagerId).SingleOrDefaultAsync();
+            var regionManager = await _context.Users.Where(x=>x.Id == request.RegionManagerId).Include(x=>x.Products).SingleOrDefaultAsync();
 
             if(regionManager is null)
             {
@@ -123,7 +128,7 @@ namespace align.Services.Product
                 };
             }
 
-            var product = await _context.Products.Where(x => x.Id == request.ProductId && !x.IsDeleted).SingleOrDefaultAsync();
+            var product = await _context.Products.Where(x => x.Id == request.ProductId && !x.IsDeleted).Include(x=>x.RegionManagers).SingleOrDefaultAsync();
 
             if (product is null)
             {
@@ -140,7 +145,10 @@ namespace align.Services.Product
             product.ChangedBy = userId;
             product.ChangedAt = DateTime.UtcNow;
 
-            regionManager.Products.Add(product);
+            if(!regionManager.Products.Any(p => p.Id == product.Id))
+            {
+                regionManager.Products.Add(product);
+            }
 
             var productAssignHistoryEntity = new ProductAssignHistory
             {

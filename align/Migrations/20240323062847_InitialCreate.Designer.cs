@@ -12,8 +12,8 @@ using align.Data;
 namespace align.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240321065852_Initial_Create")]
-    partial class Initial_Create
+    [Migration("20240323062847_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -218,6 +218,9 @@ namespace align.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("ProductAmount")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");

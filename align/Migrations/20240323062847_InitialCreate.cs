@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace align.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Create : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -192,6 +192,7 @@ namespace align.Migrations
                     RegionManagerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DoctorFullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductAmount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: true),

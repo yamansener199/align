@@ -14,7 +14,7 @@ namespace align.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("/Product/Assign")]
-        public async Task<ActionResult<AssignProductResponseModel>> Assign([FromBody] AssignProductRequestModel request)
+        public async Task<ActionResult<AssignProductResponseModel>> Assign(AssignProductRequestModel request)
         {
             string userId = HttpContext.User.Identities.FirstOrDefault().Claims.FirstOrDefault().Value;
 
