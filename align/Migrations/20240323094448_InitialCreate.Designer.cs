@@ -12,7 +12,7 @@ using align.Data;
 namespace align.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240323062847_InitialCreate")]
+    [Migration("20240323094448_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
